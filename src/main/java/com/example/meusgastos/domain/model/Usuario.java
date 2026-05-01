@@ -1,23 +1,50 @@
 package com.example.meusgastos.domain.model;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class Usuario {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-    private Long id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+@Entity
+public class Usuario implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
+    private String password;
+    @Column(columnDefinition = "TEXT")
     private String photoUrl;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date CreatedAt;
+    private LocalDateTime updatedAt;
     private Date disabledData;
+
+    @OneToMany(mappedBy = "usuario")
     private List<Titles> titles;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,6 +72,10 @@ public class Usuario {
         this.photoUrl = photoUrl;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Date getCreatedAt() {
         return CreatedAt;
     }
@@ -57,6 +88,14 @@ public class Usuario {
         return disabledData;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public void setDisabledData(Date disabledData) {
         this.disabledData = disabledData;
     }
@@ -67,6 +106,23 @@ public class Usuario {
 
     public void setTitles(List<Titles> titles) {
         this.titles = titles;
+    }
+
+    // região do framework
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        // TODO Auto-generated method stub
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
 }
