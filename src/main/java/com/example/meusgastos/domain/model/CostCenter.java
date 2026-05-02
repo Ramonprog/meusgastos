@@ -27,7 +27,7 @@ public class CostCenter {
 
     @ManyToOne()
     @JoinColumn(name = "id")
-    private Usuario usuario;
+    private User usuario;
 
     // aqui temos que colocar a tabela mandatoria
     @ManyToMany(mappedBy = "cost_center")
