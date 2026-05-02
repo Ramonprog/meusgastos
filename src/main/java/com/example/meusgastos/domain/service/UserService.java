@@ -28,18 +28,29 @@ public class UserService implements ICRUDservice<UserRequestDto, UserResponseDto
     public List<UserResponseDto> getAll() {
         return userRepository.findAll()
                 .stream()
-                .map(usuario -> new UserResponseDto(
-                        usuario.getId(),
-                        usuario.getName(),
-                        usuario.getEmail(),
-                        usuario.getDisabledData(),
-                        usuario.getPhotoUrl()))
+                .map(user -> new UserResponseDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getDisabledData(),
+                        user.getPhotoUrl()))
                 .toList();
     }
 
     @Override
     public UserResponseDto getById(String id) {
-        Optional<User> optUsuOptional = userRepository.findById(id);
+        Optional<User> optUser = userRepository.findById(id);
+        if (optUser.isEmpty()) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
+        User user = optUser.get();
+        return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getDisabledData(),
+                user.getPhotoUrl());
     }
 
     @Override
