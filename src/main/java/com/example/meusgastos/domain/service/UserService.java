@@ -3,6 +3,7 @@ package com.example.meusgastos.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,14 +78,30 @@ public class UserService implements ICRUDservice<UserRequestDto, UserResponseDto
 
     @Override
     public UserResponseDto update(String id, UserRequestDto dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        getById(id);
+
+        User user = new User();
+        user.setName(dto.name());
+        user.setEmail(dto.email());
+        user.setPassword(dto.password());
+        user.setPhotoUrl(dto.photoUrl());
+        user.setId(id);
+
+        // codificar senha
+        User userSaved = userRepository.save(user);
+
+        return new UserResponseDto(
+                userSaved.getId(),
+                userSaved.getName(),
+                userSaved.getEmail(),
+                userSaved.getDisabledData(),
+                userSaved.getPhotoUrl());
     }
 
     @Override
-    public void update(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public void delete(String id) {
+        getById(id);
+        userRepository.deleteById(id);
     }
 
 }

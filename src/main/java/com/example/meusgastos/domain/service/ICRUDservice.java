@@ -11,5 +11,5 @@ public interface ICRUDservice<Req, Res> {
 
     Res update(String id, Req dto);
 
-    void update(String id);
+    void delete(String id);
 }
