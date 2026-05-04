@@ -3,7 +3,6 @@ package com.example.meusgastos.handle;
 import java.util.Date;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +32,17 @@ public class RestExceptionHandle {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseError> handleRequestException(Exception ex) {
+        String dateTime = ConvertDateTime.convertDate(new Date());
+        ResponseError error = new ResponseError(dateTime, HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "INTERNAL_SERVER_ERROR", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(error);
     }
 }

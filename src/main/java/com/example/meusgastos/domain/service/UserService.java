@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.meusgastos.domain.exception.ResourceBadRequest;
+import com.example.meusgastos.domain.exception.ResourceNotFoundExeption;
 import com.example.meusgastos.domain.model.User;
 import com.example.meusgastos.domain.repository.UserRepository;
 import com.example.meusgastos.dto.user.UserRequestDto;
@@ -41,7 +43,7 @@ public class UserService implements ICRUDservice<UserRequestDto, UserResponseDto
     public UserResponseDto getById(String id) {
         Optional<User> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
-            throw new RuntimeException("Usuário não encontrado");
+            throw new ResourceNotFoundExeption("Não deu bom");
         }
 
         User user = optUser.get();
@@ -55,8 +57,22 @@ public class UserService implements ICRUDservice<UserRequestDto, UserResponseDto
 
     @Override
     public UserResponseDto create(UserRequestDto dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+        User user = new User();
+        user.setName(dto.name());
+        user.setEmail(dto.email());
+        user.setPassword(dto.password());
+        user.setPhotoUrl(dto.photoUrl());
+
+        // codificar senha
+        User userSaved = userRepository.save(user);
+
+        return new UserResponseDto(
+                userSaved.getId(),
+                userSaved.getName(),
+                userSaved.getEmail(),
+                userSaved.getDisabledData(),
+                userSaved.getPhotoUrl());
+
     }
 
     @Override
